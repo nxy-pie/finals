@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Portfolio - Nathalie Felias</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        butterfly: {
+                            purple: '#8B5CF6',
+                            pink: '#EC4899',
+                            cyan: '#06B6D4',
+                            dark: '#0F172A',
+                            card: '#1E293B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="relative min-h-screen text-slate-100 flex flex-col justify-between overflow-x-hidden select-none">
+
+    <div id="canvas-container"></div>
+
+    <div class="relative z-10 min-h-screen flex flex-col justify-between">
+
+        <!-- ==================== LOGIN / LANDING SECTION ==================== -->
+        <section id="login-section" class="min-h-screen flex items-center justify-center p-4 transition-all duration-700 opacity-100 scale-100">
+            <div class="glass-panel max-w-md w-full rounded-3xl p-8 shadow-2xl relative overflow-hidden border border-white/10 text-center">
+                
+                <div class="absolute -top-16 -right-16 w-32 h-32 bg-purple-500/30 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-16 -left-16 w-32 h-32 bg-pink-500/30 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                    <i class="fa-solid font-bold fa-butterfly text-2xl text-white"></i>
+                </div>
+
+                <h1 class="text-3xl font-extrabold tracking-tight mb-2 text-white">Welcome Back</h1>
+                <p class="text-slate-400 text-sm mb-8">Enter your credentials or click below to explore Nathalie's portfolio.</p>
+
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5 text-left">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Username / Email</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-regular fa-envelope"></i>
+                            </span>
+                            <input type="text" id="username" placeholder="Nathaliefelias@gmail.com" value="Nathaliefelias@gmail.com" class="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-slate-100 text-sm transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-lock text-xs"></i>
+                            </span>
+                            <input type="password" id="password" value="••••••••" class="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-700/60 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 text-slate-100 text-sm transition">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white shadow-lg shadow-purple-500/25 transition duration-300 transform active:scale-95 flex items-center justify-center gap-2 group cursor-pointer">
+                        <span>See My Portfolio</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-xs text-slate-400">
+                    <i class="fa-solid fa-circle-info mr-1 text-purple-400"></i> Tip: Click directly to view the 3D Interactive Portfolio!
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PORTFOLIO SECTION ==================== -->
+        <main id="portfolio-section" class="hidden min-h-screen flex-col transition-all duration-700 opacity-0 scale-95 pb-16">
+            
+            <!-- Navigation Bar -->
+            <header class="sticky top-4 z-40 px-4 max-w-6xl mx-auto w-full mt-4">
+                <nav class="glass-panel rounded-2xl px-6 py-3 flex items-center justify-between shadow-xl border border-white/10">
+
+                    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('about')">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base text-white tracking-wide block leading-tight" id="nav-brand-name">Nathalie Felias</span>
+                            <span class="text-[10px] uppercase font-semibold text-purple-400 tracking-wider" id="nav-brand-tagline">Student & Developer</span>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex items-center space-x-1 bg-slate-900/50 p-1.5 rounded-xl border border-white/5">
+                        <button onclick="switchTab('about')" id="nav-btn-about" class="nav-tab active px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 bg-purple-600 text-white shadow">
+                            <i class="fa-solid fa-user text-xs"></i> About Me
+                        </button>
+                        <button onclick="switchTab('skills')" id="nav-btn-skills" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-xs"></i> My Skills
+                        </button>
+                        <button onclick="switchTab('projects')" id="nav-btn-projects" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-xs"></i> My Projects
+                        </button>
+                        <button onclick="switchTab('contact')" id="nav-btn-contact" class="nav-tab px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> Contact Me
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button onclick="resetCameraView()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-xs text-slate-300 transition" title="Reset 3D Scene View">
+                            <i class="fa-solid fa-rotate-right text-purple-400"></i> <span class="hidden lg:inline">Reset View</span>
+                        </button>
+                        <button onclick="handleLogout()" class="px-3.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="flex md:hidden justify-around bg-slate-900/90 backdrop-blur-md mt-2 p-2 rounded-xl border border-white/10 text-xs">
+                    <button onclick="switchTab('about')" id="m-nav-about" class="p-2 text-purple-400 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-user"></i> About
+                    </button>
+                    <button onclick="switchTab('skills')" id="m-nav-skills" class="p-2 text-slate-400 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-lightbulb"></i> Skills
+                    </button>
+                    <button onclick="switchTab('projects')" id="m-nav-projects" class="p-2 text-slate-400 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-cubes"></i> Projects
+                    </button>
+                    <button onclick="switchTab('contact')" id="m-nav-contact" class="p-2 text-slate-400 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-paper-plane"></i> Contact
+                    </button>
+                </div>
+            </header>
+
+            <div class="max-w-5xl mx-auto w-full px-4 mt-8 flex-1">
+
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl mb-8 border border-white/10 relative overflow-hidden">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
+                        
+                        <div class="relative group">
+                            <div class="w-32 h-32 rounded-2xl overflow-hidden border-2 border-purple-500/50 profile-pulse relative bg-slate-800">
+                                <img id="profile-img" src="C:\Users\ADMIN\Desktop\Final_Project_Nathalie_Felias\af251fcb-22c2-4f8b-bc3e-0630ae3f5c5f.jfif" alt="Profile Photo" class="w-full h-full object-cover">
+                                <label for="photo-upload" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-xs text-white gap-1 backdrop-blur-xs">
+                                    <i class="fa-solid fa-camera text-lg text-purple-400"></i>
+                                    <span>Upload Photo</span>
+                                </label>
+                                <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="uploadProfilePhoto(event)">
+                            </div>
+                            <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping"></span> Active
+                            </span>
+                        </div>
+
+                        <div class="flex-1 text-center sm:text-left">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div>
+                                    <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight" id="user-fullname">Nathalie Felias</h1>
+                                    <p class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold text-sm mt-1" id="user-tagline">
+                                        "I may not stand out first, but I show up always"
+                                    </p>
+                                </div>
+                                <button onclick="enableProfileEditModal()" class="self-center sm:self-start text-xs bg-slate-800/80 hover:bg-slate-700/80 text-purple-300 border border-purple-500/30 px-3.5 py-2 rounded-xl transition flex items-center gap-2">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit Info
+                                </button>
+                            </div>
+
+                            <p class="text-slate-300 text-xs sm:text-sm mt-4 leading-relaxed max-w-2xl" id="user-intro">
+                               I am 19 years old and currently studying at Datamex College of Saint Adeline. I was born with a condition called cleft palate, meaning I do not have a hard palate (ngala-ngala), but that has never stopped me from growing as a person.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 1: ABOUT ME -->
+                <div id="tab-about" class="tab-content transition-all duration-300">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Short Biography -->
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-book-open text-base"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white">Short Biography</h3>
+                            </div>
+                            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed" id="bio-text">
+                                I am currently studying Associate in Computer Technology. My journey has been a bit of a rocky road since I was not very familiar with technology at first, but I am learning every day. So far, I have built Java login forms and am continuing to expand my skills. I am not done yet—the next time you view this portfolio, you will be impressed!
+                            </p>
+                        </div>
+
+                        <!-- Academic Details -->
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-9 h-9 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-graduation-cap text-base"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white">Academic Program</h3>
+                            </div>
+                            <div class="space-y-3 text-xs sm:text-sm">
+                                <div>
+                                    <span class="text-slate-400 text-[11px] uppercase font-semibold tracking-wider block">Degree / Course</span>
+                                    <p class="text-slate-100 font-semibold" id="academic-course">Bachelor of Science in Information Technology (Association Computer Technology)</p>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-[11px] uppercase font-semibold tracking-wider block">University / School</span>
+                                    <p class="text-slate-100 font-semibold" id="academic-school">Datamex College Of Saint Adeline</p>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 text-[11px] uppercase font-semibold tracking-wider block">Year / Status</span>
+                                    <span class="inline-block mt-1 px-2.5 py-1 bg-purple-500/10 text-purple-300 border border-purple-500/30 rounded-lg text-xs font-medium">Second Year</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hobbies -->
+                        <div class="glass-card rounded-2xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-heart text-base"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white">Hobbies</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2" id="hobbies-list">
+                                <span class="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 text-xs text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-purple-400 text-xs"></i> Reading</span>
+                                <span class="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 text-xs text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-music text-pink-400 text-xs"></i> Listening to Music</span>
+                            </div>
+                        </div>
+
+                        <!-- Interests -->
+                        <div class="glass-card rounded-2xl p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-compass text-base"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white">Interests</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2" id="interests-list">
+                                <span class="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-white/10 text-xs text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-book text-emerald-400 text-xs"></i> Reading Books</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: MY SKILLS -->
+                <div id="tab-skills" class="tab-content hidden transition-all duration-300">
+                    <div class="glass-panel rounded-3xl p-6 sm:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-bold text-white">Core Technical Skills</h2>
+                            <p class="text-slate-400 text-xs sm:text-sm">Key technical proficiencies and development tools I am currently mastering.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="skills-container">
+                            <!-- Skill 1 -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                                        <i class="fa-brands fa-html5 text-orange-400 text-base"></i> Basic HTML
+                                    </span>
+                                    <span class="text-xs font-semibold text-orange-400">90%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="bg-gradient-to-r from-orange-500 to-amber-400 h-full rounded-full" style="width: 90%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Building webpage structure, web forms, and essential markup elements.</p>
+                            </div>
+
+                            <!-- Skill 2 -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                                        <i class="fa-brands fa-java text-red-400 text-base"></i> Java
+                                    </span>
+                                    <span class="text-xs font-semibold text-red-400">50%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="bg-gradient-to-r from-red-500 to-pink-500 h-full rounded-full" style="width: 50%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Creating basic Java forms, GUI interfaces, and object-oriented concepts.</p>
+                            </div>
+
+                            <!-- Skill 3 -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                                        <i class="fa-solid fa-palette text-pink-400 text-base"></i> Design
+                                    </span>
+                                    <span class="text-xs font-semibold text-pink-400">30%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="bg-gradient-to-r from-pink-500 to-purple-500 h-full rounded-full" style="width: 30%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Basic UI design layout, glassmorphism principles, and visual organization.</p>
+                            </div>
+
+                            <!-- Skill 4 -->
+                            <div class="glass-card p-5 rounded-2xl">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                                        <i class="fa-solid fa-database text-cyan-400 text-base"></i> Oracle
+                                    </span>
+                                    <span class="text-xs font-semibold text-cyan-400">20%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full" style="width: 20%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Fundamental SQL queries, data structure concepts, and database handling.</p>
+                            </div>
+
+                            <!-- Skill 5 -->
+                            <div class="glass-card p-5 rounded-2xl md:col-span-2">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                                        <i class="fa-brands fa-python text-yellow-400 text-base"></i> Python
+                                    </span>
+                                    <span class="text-xs font-semibold text-yellow-400">10%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                    <div class="bg-gradient-to-r from-yellow-500 to-amber-400 h-full rounded-full" style="width: 10%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mt-2">Basic syntax understanding and introductory programming logic.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: MY PROJECTS -->
+                <div id="tab-projects" class="tab-content hidden transition-all duration-300">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-white">Featured Projects</h2>
+                        <p class="text-slate-400 text-xs sm:text-sm">Explore my projects and web applications created during my studies.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Project 1: Registration Form -->
+                        <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                            <div>
+                                <div class="h-52 relative overflow-hidden bg-slate-900/80 flex items-center justify-center p-3">
+                                    <svg viewBox="0 0 300 450" class="w-full h-full rounded-lg shadow-lg border border-pink-300/30 bg-[#fbcfe8] text-slate-800 p-4 font-sans text-[11px] select-none">
+                                        <text x="150" y="24" text-anchor="middle" font-weight="bold" font-size="16" fill="#000">Registration Form</text>
+                                        <text x="20" y="50" font-weight="bold" fill="#333">User id:</text>
+                                        <rect x="20" y="56" width="260" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="20" y="98" font-weight="bold" fill="#333">Password:</text>
+                                        <rect x="20" y="104" width="260" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="20" y="146" font-weight="bold" fill="#333">Name:</text>
+                                        <rect x="20" y="152" width="260" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="20" y="194" font-weight="bold" fill="#333">Address:</text>
+                                        <rect x="20" y="200" width="260" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="20" y="242" font-weight="bold" fill="#333">Country:</text>
+                                        <rect x="20" y="248" width="180" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="30" y="263" fill="#666" font-size="10">(Please select a country)</text>
+                                        <text x="20" y="295" font-weight="bold" fill="#333">Email:</text>
+                                        <rect x="20" y="301" width="260" height="22" rx="3" fill="#fff" stroke="#ccc"/>
+                                        <text x="20" y="343" font-weight="bold" fill="#333">Sex:</text>
+                                        <circle cx="160" cy="340" r="5" fill="#fff" stroke="#888"/>
+                                        <text x="170" y="343" fill="#333">Male</text>
+                                        <circle cx="220" cy="340" r="5" fill="#fff" stroke="#888"/>
+                                        <text x="230" y="343" fill="#333">Female</text>
+                                    </svg>
+                                    <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-pink-500/80 text-white backdrop-blur-md shadow">Registration Form</span>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-base font-bold text-white mb-2">Registration Form</h3>
+                                    <p class="text-slate-300 text-xs leading-relaxed mb-4">A page where new users can create their own account. Includes fields for full name, username, email, password, address, and country selection.</p>
+                                </div>
+                            </div>
+                            <div class="p-5 pt-0">
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    <span class="px-2 py-0.5 rounded-md bg-pink-500/10 text-pink-300 text-[10px] font-medium border border-pink-500/20">Web Code</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-pink-500/10 text-pink-300 text-[10px] font-medium border border-pink-500/20">HTML</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-pink-500/10 text-pink-300 text-[10px] font-medium border border-pink-500/20">CSS</span>
+                                </div>
+                                <button onclick="openProjectModal('Registration Form', 'A page where new users can create their own account. Includes fields for full name, username, email, password, and contact details. Password is hidden as you type to keep it private. All information is organized and easy to fill out.', ['Web Code', 'HTML', 'CSS'])" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition border border-white/10">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 2: Login Form -->
+                        <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                            <div>
+                                <div class="h-52 relative overflow-hidden bg-slate-900/80 flex items-center justify-center p-3">
+                                    <svg viewBox="0 0 300 400" class="w-full h-full rounded-lg shadow-lg border border-purple-300/30 bg-[#f3e8ff] text-slate-800 p-4 font-sans text-[11px] select-none">
+                                        <rect x="15" y="30" width="270" height="340" rx="16" fill="#ffffff" filter="drop-shadow(0px 8px 12px rgba(0,0,0,0.1))"/>
+                                        <text x="150" y="80" text-anchor="middle" font-weight="bold" font-size="22" fill="#6b21a8">Login</text>
+                                        <rect x="40" y="115" width="220" height="38" rx="8" fill="#fff" stroke="#e9d5ff" stroke-width="2"/>
+                                        <text x="80" y="139" font-weight="500" font-size="13" fill="#374151">Nathalie</text>
+                                        <rect x="40" y="170" width="220" height="38" rx="8" fill="#fff" stroke="#e9d5ff" stroke-width="2"/>
+                                        <text x="80" y="195" font-weight="bold" font-size="16" fill="#374151">••••••••</text>
+                                        <rect x="40" y="225" width="14" height="14" rx="3" fill="#fff" stroke="#d8b4fe" stroke-width="2"/>
+                                        <text x="62" y="237" font-size="12" fill="#4b5563">Remember me</text>
+                                        <rect x="40" y="255" width="220" height="42" rx="10" fill="#6b21a8"/>
+                                        <text x="150" y="281" text-anchor="middle" font-weight="bold" font-size="14" fill="#ffffff">Login</text>
+                                        <text x="150" y="325" text-anchor="middle" font-size="11" fill="#6b21a8">Don't have an account? Sign up here</text>
+                                    </svg>
+                                    <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/80 text-white backdrop-blur-md shadow">Login UI</span>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-base font-bold text-white mb-2">Login Form</h3>
+                                    <p class="text-slate-300 text-xs leading-relaxed mb-4">The sign-in page for users with existing accounts. Features username and password validation, remember me option, and quick sign-up routing.</p>
+                                </div>
+                            </div>
+                            <div class="p-5 pt-0">
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    <span class="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 text-[10px] font-medium border border-purple-500/20">Web Code</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 text-[10px] font-medium border border-purple-500/20">HTML</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 text-[10px] font-medium border border-purple-500/20">CSS</span>
+                                </div>
+                                <button onclick="openProjectModal('Login Form', 'The sign-in page for users who already have an account. Has username and password fields, plus a Remember Me option. Includes a link for those who don’t have an account yet.', ['Web Code', 'HTML', 'CSS'])" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition border border-white/10">View Details</button>
+                            </div>
+                        </div>
+
+                        <!-- Project 3: 3D Butterfly Portfolio -->
+                        <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                            <div>
+                                <div class="h-52 relative overflow-hidden bg-slate-900/80 flex items-center justify-center p-3">
+                                    <svg viewBox="0 0 500 300" class="w-full h-full rounded-lg shadow-lg border border-cyan-300/30 bg-[#0b0f19] text-slate-100 p-4 font-sans text-[11px] select-none">
+                                        <rect x="10" y="10" width="480" height="40" rx="10" fill="#1e293b" opacity="0.8"/>
+                                        <text x="30" y="34" font-weight="bold" font-size="14" fill="#ffffff">Nathalie Felias</text>
+                                        <rect x="200" y="20" width="60" height="20" rx="6" fill="#8b5cf6"/>
+                                        <text x="230" y="34" text-anchor="middle" font-size="10" fill="#ffffff">About</text>
+                                        <rect x="10" y="60" width="480" height="100" rx="12" fill="#1e293b" opacity="0.6"/>
+                                        <rect x="25" y="75" width="70" height="70" rx="10" fill="#a855f7"/>
+                                        <text x="110" y="95" font-weight="bold" font-size="16" fill="#ffffff">Nathalie Felias</text>
+                                        <text x="110" y="115" font-size="11" fill="#ec4899">"I may not stand out first, but I show up always"</text>
+                                        <path d="M 400 180 Q 420 150 440 180 Q 420 210 400 180 Z" fill="#ec4899" opacity="0.8"/>
+                                        <path d="M 440 180 Q 460 150 480 180 Q 460 210 440 180 Z" fill="#8b5cf6" opacity="0.8"/>
+                                    </svg>
+                                    <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-cyan-500/80 text-white backdrop-blur-md shadow">Interactive 3D</span>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="text-base font-bold text-white mb-2">3D Butterfly Portfolio</h3>
+                                    <p class="text-slate-300 text-xs leading-relaxed mb-4">An interactive 3D WebGL web app showcasing background profile info, skills, and projects with animated interactive butterflies.</p>
+                                </div>
+                            </div>
+                            <div class="p-5 pt-0">
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[10px] font-medium border border-cyan-500/20">HTML</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[10px] font-medium border border-cyan-500/20">CSS</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[10px] font-medium border border-cyan-500/20">JavaScript</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-300 text-[10px] font-medium border border-cyan-500/20">Three.js</span>
+                                </div>
+                                <button onclick="openProjectModal('3D Butterfly Portfolio', 'An interactive 3D portfolio website that showcases profile info, skills, and projects. Features animated 3D WebGL butterflies, editable profile parameters, and tabbed section switching.', ['HTML', 'CSS', 'JavaScript', 'Three.js', 'Tailwind CSS'])" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition border border-white/10">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: CONTACT ME -->
+                <div id="tab-contact" class="tab-content hidden transition-all duration-300">
+                    <div class="glass-panel rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto">
+                        <div class="text-center mb-8">
+                            <h2 class="text-2xl font-bold text-white">Get In Touch</h2>
+                            <p class="text-slate-400 text-xs sm:text-sm mt-1">Feel free to connect or reach out to me anytime!</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                            <!-- Direct Email -->
+                            <a id="contact-email" href="mailto:Nathaliefelias@gmail.com" class="glass-card p-4 rounded-2xl flex items-center gap-4 group">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Email Address</span>
+                                    <span class="text-xs sm:text-sm text-slate-200 font-semibold truncate block group-hover:text-purple-300 transition">Nathaliefelias@gmail.com</span>
+                                </div>
+                            </a>
+
+                            <!-- Facebook Profile -->
+                            <a href="https://www.facebook.com/nathalie.felias.1" target="_blank" rel="noopener noreferrer" class="glass-card p-4 rounded-2xl flex items-center gap-4 group">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                    <i class="fa-brands fa-facebook"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Facebook Profile</span>
+                                    <span class="text-xs sm:text-sm text-slate-200 font-semibold truncate block group-hover:text-blue-300 transition">nathalie.felias.1</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Interactive Form -->
+                        <form onsubmit="handleContactSubmit(event)" class="space-y-4 glass-card p-6 rounded-2xl">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+                                <input type="text" required placeholder="John Doe" class="w-full px-4 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Your Email</label>
+                                <input type="email" required placeholder="john@example.com" class="w-full px-4 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Message</label>
+                                <textarea rows="3" required placeholder="Hello Nathalie, I'd like to talk about..." class="w-full px-4 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:outline-none focus:border-purple-500 text-xs text-slate-100 resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-purple-500/25">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer id="main-footer" class="hidden text-center text-xs text-slate-500 py-6 border-t border-white/5 mt-auto">
+                <p>© 2026 Nathalie Felias • Datamex College Of Saint Adeline</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- EDIT PROFILE MODAL -->
+    <div id="edit-profile-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-purple-400"></i> Edit Profile Information
+                </h3>
+                <button onclick="closeProfileEditModal()" class="text-slate-400 hover:text-white p-1 text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4 text-xs text-left">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="edit-fullname" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Personal Tagline / Motto</label>
+                    <input type="text" id="edit-tagline" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Short Introduction</label>
+                    <textarea id="edit-intro" rows="3" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500 resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Course / Degree</label>
+                    <input type="text" id="edit-course" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">University / School</label>
+                    <input type="text" id="edit-school" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="edit-email" class="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-700/60 rounded-xl text-slate-100 focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeProfileEditModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold">Cancel</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-semibold shadow-lg shadow-purple-500/25">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROJECT DETAILS MODAL -->
+    <div id="project-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-white/10 relative">
+            <button onclick="closeProjectModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-base">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-3" id="modal-project-title">Project Details</h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-6" id="modal-project-desc"></p>
+            <div class="mb-6">
+                <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block mb-2">Technologies Used</span>
+                <div class="flex flex-wrap gap-2" id="modal-project-techs"></div>
+            </div>
+            <button onclick="closeProjectModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-white/10">Close</button>
+        </div>
+    </div>
+
+    <!-- Embedded JavaScript Logic File -->
+    <script src="script.js"></script>
+</body>
+</html>
